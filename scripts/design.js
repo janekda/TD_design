@@ -137,7 +137,7 @@ function showSubMenu() {
    references[11] = "<td class='myMatches myMainButton clickableArea'><a href='" + SITE_ADRESS + "duel/league/' class='myMatchesFont'>Liga</a></td>";
    references[12] = "<td class='myMatches myMainButton clickableArea'><a href='" + SITE_ADRESS + "duel/tournaments/' class='myMatchesFont'>Turnaje</a></td>";
 
-   references[13] = "<td colspan='2' class='myMatches myMainButton'><a href='" + SITE_ADRESS + "duel/bounty/' class='myMatchesFont'>Odměny</a></td>";
+   references[13] = "<td colspan='2' class='myMatches myMainButton clickableArea'><a href='" + SITE_ADRESS + "duel/bounty/' class='myMatchesFont'>Odměny</a></td>";
 
    var floatMenu = "<table id='floatMenu' style='font-size:13px;'>";
 
@@ -155,7 +155,9 @@ function showSubMenu() {
          floatMenu += "<tr><td colspan='2'><table id='bounties' style='width:100%'></table></td></tr>";
     }
 
-
+   floatMenu += "<tr><td colspan='2'><table class='loggedMembersButton' id='loggedMembersButton'><tr><td>Přihlášení členové</td></tr></table></td></tr>";
+   floatMenu += "<tr><td colspan='2'><table id='loggedMembers' style='width:100%'></table></td></tr>";
+   
    floatMenu += "</table>";
    $(".container").before(floatMenu);
 
@@ -178,6 +180,7 @@ function showSubMenu() {
    
    noticeForum();
    
+   addLoggedMembers();
    
    /**
     * Vypsání odměn. Na stránkách Odměny se nezobrazí. 
@@ -217,9 +220,7 @@ function showSubMenu() {
             if(isNewBounty){
                
                  bountyClass = "newBounty";
-                 alert(bounties.length + "\n" + playerId);
                  bounties.push(playerId);
-                 alert(bounties.length + "\nAFTER");
                  localStorage.setItem("bounties", JSON.stringify(bounties));
             }
             players += "<tr><td class='" + bountyClass + " clickableArea' id='player_'" + playerId + "'><a href='" + playerBountyHref + "'>" + $(this).text() + "</a></td></tr>";
@@ -272,7 +273,7 @@ function computeAttributes(){
  */
 function createClickableArea(){
  
-   $clickableAreas = $(".clickableArea");
+   var $clickableAreas = $(".clickableArea");
    
    $clickableAreas.click(function(){
         
@@ -280,4 +281,53 @@ function createClickableArea(){
       window.location.href = href;
    });
    
+}
+
+/**
+ * Přidá chování k tlačítku "Přihlášení uživatelé". Tedy vypsání členů. 
+ */
+function addLoggedMembers(){
+  
+   var $loggedMembersButton = $("#loggedMembersButton");
+  
+   $loggedMembersButton.click(function(){
+     
+      var urlClub = SITE_ADRESS + "news/clubs/";
+      var loggedPlayers = [];
+      
+      $.ajax({
+         url : urlClub,
+         dataType : "html",
+         complete : function(jqXHR, textStatus){
+            
+            var loggedMemebrsHtml = "";
+            for(var i = 0; i < loggedPlayers.length; i++){
+               
+               loggedMemebrsHtml += "<tr><td class='profile_link'><a class='ico_mail_send' href='" + SITE_ADRESS + "mail/send?data=to-"+ loggedPlayers[i][0] + "'>" + loggedPlayers[i][1] + "</a></td></tr>";
+            }
+            
+            $("#loggedMembers").append(loggedMemebrsHtml);
+         },
+         success : function(data) {
+         
+            var $players = $(data).find("div.profile_club_list_players>table>tbody>tr>td:nth-child(2)");
+            
+            $players.each(function(){
+               
+               var isPlayerLogged = $(this).find("IMG:eq(1)").attr("src").indexOf("online.png")>-1;
+               if(isPlayerLogged){
+                  
+                  var playerHref = $(this).find("A").attr("href");
+                  var playerId = playerHref.substring(playerHref.indexOf("id=") + 3);
+                  var playerName = $(this).find("A").text();
+                  
+                  loggedPlayers.push([playerId, playerName]);
+               }
+            });
+            
+            
+         }
+      });
+
+   });
 }

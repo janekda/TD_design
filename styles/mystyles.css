@@ -31,6 +31,9 @@
 .bounty:hover{ background-color: #DD4411; }
 #bounties {margin-top: 20px;}
 
+.loggedMembersButton{background-color: #2B9839; cursor: pointer; border:solid 2px #C3DBCD; border-radius:2px; margin: 10px; text-align: center}
+
+
 #directLinks {float: left;text-align: center}
 .directLink {font-size:20px; font-weight:bold; cursor:pointer; margin-top: 4px; padding:1px; border-radius:2px; width: 35px; height: 30px;}
  
