@@ -1,0 +1,50 @@
+.container {width: 1100px; left: 280px}
+
+
+#floatMenu {width : 260px; position : absolute; top : 40px; left : 80px;}
+
+.myBasic {background-color: #556362;}
+.myBasic:hover {background-color:#292929; color:#F1F1F1 }
+.myMoney {background-color: #4DB05B;}
+.myMoney:hover {background-color: #2B9839}
+.myMatches {background-color: #CC9966;}
+.myMatches:hover {background-color: #AA7744}
+.myClub {background-color: #E5ED98;}
+.myClub:hover {background-color:#C3CB76}
+.myAbilities {background-color: #2A9FDE;}
+.myAbilities:hover {background-color:#097DBC}
+.myFind {background-color: #FFCC66; text-align:center;}
+
+.myMainButton {border:solid 2px black; border-radius:2px; margin:4px; border-collapse: separate; text-align: center}
+
+.myBasicFont {font-weight:bold}
+.myMoneyFont {color: #084017; font-weight:bold}
+.myMatchesFont {color: #451315; font-weight:bold}
+.myClubFont {color: #4F522E; font-weight:bold}
+.myAbilitiesFont {color: #084017; font-weight:bold}
+.myFindFont {color: #0E1140; font-size:13px; font-weight:bold}
+
+.clickableArea{cursor: pointer}
+
+.bounty {background-color: #FF6633}
+.newBounty{background-color:#FF0000}
+.bounty:hover{ background-color: #DD4411; }
+#bounties {margin-top: 20px;}
+
+#directLinks {float: left;text-align: center}
+.directLink {font-size:20px; font-weight:bold; cursor:pointer; margin-top: 4px; padding:1px; border-radius:2px; width: 35px; height: 30px;}
+ 
+#toBank{color:green; background-color:#CEF2DC}
+#toBuilding30 {color:#9FC79D; background-color:#C3DBCD}
+#toBuilding60 {color:#E6B400; background-color:#D4BE6A}
+#toBuilding{color:orange; background-color:#F2CAAE}
+
+
+.range{margin-left: 7px; padding:4px; font-size: 11px; cursor: pointer; background-color: #393654; border-radius:2px}
+
+a.range:hover {text-decoration: none}
+
+
+.matchAttributes { font-size: 14px; border-collapse: collapse; font-family: Arial, Helvetica, sans-serif;}
+
+#messageFound{color: red; size: 20px;}
