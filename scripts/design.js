@@ -20,12 +20,18 @@ NOTHING_TO_BANK = 100;
 permitFor();
 addBlock();
 
-if (STANDARD_BLOCK == 0) {
+if (STANDARD_BLOCK == 100) {
+   
+   makeBountyMatchImmidiatelly();
+}
+
+if (STANDARD_BLOCK == 0 || STANDARD_BLOCK == 100) {
    // konec matení, ano tady
 
    hideElements();
    showSubMenu();
    computeAttributes();
+   showProgress();
 }
 
 function permitFor() {
@@ -67,26 +73,21 @@ function hideElements() {
  */
 function addBlock() {
    
-   var hasAlreadyCalled = STANDARD_BLOCK == 0;
+   var hasAlreadyCalled = (STANDARD_BLOCK == 0 || STANDARD_BLOCK == 100);
    if(hasAlreadyCalled){
       
       return;  
    }
    
-   //var people = ["J" + "an " + "va" + "n S" + "ch" + "ip"];
-   var people = new Array();
+   var people = ["J" + "an " + "va" + "n S" + "ch" + "ip"];
+   //var people = new Array();  //kdyby melo byt prazdne pole
    var logged = $("#toogle_menu>span").html();
 
    for ( i = 0; i < people.length; i++) {
 
       if (people[i] == logged) {
 
-         if (i == 0) {
-
-            WITHOUT_BUILDING = true;
-         }
-         
-         STANDARD_BLOCK = 0;
+         STANDARD_BLOCK = 100;
          return;
       }
    }
@@ -114,10 +115,15 @@ function addBlock() {
 }
 
 /**
- * Zobrazí základní odkazy do vedlejšího boxu. Předtím se muselo proklikávat.
+ * Zobrazí základní odkazy do vedlejšího boxu. Předtím se muselo proklikávat. Je-li zrovna živý zápas, tak se zápas přeskočí.
  */
 function showSubMenu() {
-
+   
+   if (skipLiveMatch() == true){
+      
+      return;
+   }
+   
    var references = new Array();
    references[0] = "<td class='myBasic myMainButton clickableArea'><a href='" + SITE_ADRESS + "news/news/' class='myBasicFont'>Novinky</a></td>";
    references[1] = "<td class='myBasic myMainButton clickableArea'><a href='" + SITE_ADRESS + "task/task/' class='myBasicFont'>Úkoly</a></td>";
@@ -183,6 +189,28 @@ function showSubMenu() {
    addLoggedMembers();
    
    /**
+    * @return boolean true - jestli se přeskakuje zápas, false na všech ostatních stránkách 
+    */
+   function skipLiveMatch(){
+      
+      var isMatchSkipped = false;
+      
+      var actualUrl = location.href;
+      var isLiveMatch = actualUrl.indexOf("#live")>-1;
+      if(isLiveMatch){
+         
+         var $skipLiveMatchSelector = $("div .button_clas_text:contains('Přeskočit')"); 
+         if ($skipLiveMatchSelector.size() == 1){
+            
+            $skipLiveMatchSelector.click();
+            isMatchSkipped = true;
+         }
+      }
+      
+      return isMatchSkipped;
+   }
+   
+   /**
     * Vypsání odměn. Na stránkách Odměny se nezobrazí. 
     */
    function writeBounties(){
@@ -190,6 +218,7 @@ function showSubMenu() {
       var bountyUrl = SITE_ADRESS + "duel/bounty/";
       if (location.href == bountyUrl){
          
+         createClickableArea();
          return;   
       }
       
@@ -258,6 +287,39 @@ function showSubMenu() {
       
    }
 
+}
+
+/**
+ * Kliknutím hráče na souboj o odměnu se rovnou spustí zápas. 
+ * No zdržím to na interval mezi 5 a 15 setinami, z bezpečnostních důvodů, aby to nebylo podezřelé provozovateli.
+ */
+function makeBountyMatchImmidiatelly(){
+   
+   var actualPage = location.href;
+   // priklad stranky o odmenu http://s3.tennisduel.cz/report/rival?idu=5597-b
+   var isBountyPossibleMatchPage = (actualPage.indexOf("rival?idu")>-1 &&  actualPage.indexOf("-b", actualPage.indexOf("rival?idu")) > -1);
+   var isPreviousPageBounties = (document.referrer == SITE_ADRESS + "duel/bounty/");
+   
+   if (isBountyPossibleMatchPage && isPreviousPageBounties==false){
+      
+      var $playMatchSelector = $("div .button_clas_text:contains('Hrát')");
+      if($playMatchSelector.size() == 1){
+         
+         var i = 0;
+         var waitForShortTime = Math.floor((Math.random() * 10) + 5);
+         setInterval(function(){
+            
+            var onlyFirst = 1;
+            if(i == onlyFirst){
+               
+               $playMatchSelector.click();
+            }
+            i++; 
+         }, waitForShortTime);
+          
+      }
+   }
+   
 }
 
 /**
@@ -330,4 +392,18 @@ function addLoggedMembers(){
       });
 
    });
+}
+
+function showProgress(){
+   
+   var $levelText = $("div .level_text");
+   var title = $levelText.attr("title");
+   
+   var nowExperience = title.substring(title.indexOf(":")+1, title.indexOf("/")-1);
+   var endLevelExperience = title.substring(title.indexOf(":", title.indexOf("/"))+1);
+   
+   $levelText.append("<span style='font-size:10px;font-weight:normal'>" + (endLevelExperience - nowExperience) + "<span>");
+   
+   
+     
 }
